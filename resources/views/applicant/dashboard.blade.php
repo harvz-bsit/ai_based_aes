@@ -9,16 +9,15 @@
             <!-- LEFT: WELCOME / STATUS -->
             <div class="col-lg-8 py-4">
                 <h2 class="fw-bold mb-1">
-                    Welcome, {{ auth()->user()->name }} 👋
+                    Welcome back, {{ auth()->user()->name }} 👋
                 </h2>
-
                 <p class="text-muted mb-4">
-                    Browse available positions and submit your application.
+                    Track your application progress and explore new job opportunities.
                 </p>
 
                 <!-- Application Status -->
                 <div class="mb-4">
-                    <strong>Application Status:</strong>
+                    <strong>Latest Application Status:</strong>
                     @php
                         $latestApplication = $applications->first();
                         $status = $latestApplication->status ?? 'Not Submitted';
@@ -31,24 +30,49 @@
                         };
                     @endphp
                     <span class="badge {{ $badgeClass }} ms-2">{{ $status }}</span>
+                    <div class="text-muted small mt-1">
+                        @switch($status)
+                            @case('Pending')
+                                Your application has been submitted and is awaiting review.
+                            @break
+
+                            @case('Under Review')
+                                The HR team is currently evaluating your application.
+                            @break
+
+                            @case('Approved')
+                                Congratulations! You have been accepted.
+                            @break
+
+                            @case('Rejected')
+                                Unfortunately, your application was not successful.
+                            @break
+
+                            @default
+                                You haven’t submitted any applications yet.
+                        @endswitch
+                    </div>
                 </div>
 
                 <hr>
 
                 <!-- How It Works -->
-                <h5 class="fw-semibold mb-3">How It Works</h5>
+                <h5 class="fw-semibold mb-3">Application Process</h5>
                 <ol class="text-muted">
-                    <li>Select a position</li>
-                    <li>Fill out the application form</li>
-                    <li>Upload required documents</li>
-                    <li>Wait for evaluation</li>
+                    <li>Choose an available position</li>
+                    <li>Complete the online application form</li>
+                    <li>Upload your required documents</li>
+                    <li>Wait for HR evaluation and feedback</li>
                 </ol>
             </div>
 
             <!-- RIGHT: AVAILABLE POSITIONS -->
             <div class="col-lg-4 border-start d-flex flex-column h-100">
                 <div class="py-4 px-3 flex-grow-1 overflow-auto">
-                    <h5 class="fw-semibold mb-3">Available Positions</h5>
+                    <h5 class="fw-semibold mb-1">Available Positions</h5>
+                    <p class="text-muted small mb-3">
+                        Click on a position to view full details and apply.
+                    </p>
 
                     <div class="row g-3">
                         @foreach ($positions as $position)
@@ -58,6 +82,10 @@
                                     data-bs-target="#jobModal{{ $position->id }}">
                                     <div class="card-body">
                                         <h6 class="card-title fw-bold mb-1">{{ $position->title }}</h6>
+                                        <p class="text-muted small mb-1">
+                                            {{ $position->department ?? 'N/A' }} ||
+                                            {{ $position->campus ?? 'N/A' }}
+                                        </p>
                                         <p class="card-text text-muted small mb-2">
                                             {{ Str::limit($position->qualifications, 60) }}</p>
                                         <span class="badge {{ $position->is_open ? 'bg-success' : 'bg-secondary' }}">
@@ -77,7 +105,11 @@
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                     aria-label="Close"></button>
                                             </div>
-                                            <div class="modal-body">
+                                            <div class="modal-body">`
+                                                <p><strong>Department:</strong>
+                                                    {{ $position->department ?? 'N/A' }}</p>`
+                                                <p><strong>Campus:</strong>
+                                                    {{ $position->campus ?? 'N/A' }}</p>`
                                                 <p><strong>Qualifications:</strong></p>
                                                 <p>{{ $position->qualifications }}</p>
 
@@ -95,7 +127,8 @@
                                             </div>
                                             <div class="modal-footer">
                                                 @if ($position->is_open)
-                                                    <a href="{{ route('apply') }}" class="btn btn-primary">Apply Now</a>
+                                                    <a href="{{ route('apply.filter') }}" class="btn btn-primary">Apply
+                                                        Now</a>
                                                 @endif
                                                 <button type="button" class="btn btn-secondary"
                                                     data-bs-dismiss="modal">Close</button>

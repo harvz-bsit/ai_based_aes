@@ -12,7 +12,7 @@ class DashboardController extends Controller
     public function index()
     {
         $applications = Application::where('user_id', Auth::id())->latest()->get();
-        $positions = JobVacancy::all();
+        $positions = JobVacancy::where('is_open', 1)->get();
         return view('applicant/dashboard', compact('applications', 'positions'));
     }
 }

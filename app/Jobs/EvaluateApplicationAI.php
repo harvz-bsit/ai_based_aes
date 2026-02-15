@@ -38,7 +38,7 @@ class EvaluateApplicationAI implements ShouldQueue
 
         // Build GPT prompt
         $prompt = <<<PROMPT
-You are an automated resume analysis assistant.
+You are an automated hiring assistant designed to evaluate job applications based on provided documents and job qualifications.
 
 Analyze the applicant's documents and compare them against the job qualifications.
 This analysis is for decision-support only and does NOT make final hiring decisions.
@@ -62,7 +62,7 @@ Application Letter:
 PDS:
 {$pdsText}
 
-OTR:
+Official Transcript of Records (OTR):
 {$otrText}
 
 Certificates:
@@ -75,19 +75,34 @@ Tasks:
    - Highly Recommended
    - Consider
    - Rejected
-4. Provide a detailed justification with specific references to the document content, and how did you arrive at your recommendation.
+4. Provide a THOROUGH, STRUCTURED justification with separate sections for each document:
+   - Resume Analysis
+   - Application Letter Analysis
+   - PDS Analysis
+   - OTR Analysis
+   - Certificates Analysis
+   - Overall Assessment
 
 IMPORTANT:
 - Do NOT refuse.
 - Do NOT include disclaimers.
 - Do NOT include explanations outside the required format.
+- Each section MUST be at least 3–5 sentences.
+- Reference specific skills, experiences, or evidence from each document.
 - Output MUST follow the exact format below.
 
 FORMAT (STRICT — NO EXTRA TEXT):
+
 Score: <number>
 Qualification Match: <number with 2 decimals>
 Recommendation: <label>
-Justification: <text>
+Justification:
+Resume Analysis: <text>
+Application Letter Analysis: <text>
+PDS Analysis: <text>
+OTR Analysis: <text>
+Certificates Analysis: <text>
+Overall Assessment: <text, you can include a text that saying a document provided is not correctly formatted or is missing, but do NOT penalize the applicant for this. Instead, just note it in the relevant section.>
 PROMPT;
 
         // Call GPT-4o

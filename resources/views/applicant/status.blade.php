@@ -13,6 +13,7 @@
                         <tr>
                             <th>Job Position</th>
                             <th>Date Submitted</th>
+                            <th>Received At</th>
                             <th>Status</th>
                             <th>Actions</th>
                         </tr>
@@ -22,6 +23,13 @@
                             <tr>
                                 <td>{{ $app->job->title }}</td>
                                 <td>{{ $app->created_at->format('M d, Y') }}</td>
+                                <td>
+                                    @if ($app->status !== 'Pending')
+                                        {{ $app->updated_at->format('M d, Y') }}
+                                    @else
+                                        <span class="text-muted">To be updated</span>
+                                    @endif
+                                </td>
                                 <td>
                                     @php
                                         $status = $app->status;

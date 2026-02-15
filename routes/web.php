@@ -7,6 +7,12 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KMeansController;
 use App\Http\Controllers\LandingController;
 
+Route::get(
+    '/api/departments/{campus}',
+    [ApplicationController::class, 'getDepartmentsByCampus']
+);
+
+
 Route::middleware('guest')->group(function () {
 
     Route::get('/', [LandingController::class, 'index'])->name('landing');
@@ -39,7 +45,9 @@ Route::middleware('auth')->group(function () {
     })->name('contact');
 
     // Application Routes
-    Route::get('/apply', [ApplicationController::class, 'create'])->name('apply');
+
+    Route::get('/apply/filter', [ApplicationController::class, 'index'])->name('apply.filter');
+    Route::post('/apply/form', [ApplicationController::class, 'create'])->name('apply');
     Route::post('/apply', [ApplicationController::class, 'store'])->name('applications.store');
     Route::get('/applications/status', [ApplicationController::class, 'status'])->name('applications.status');
     Route::get('/applications/status/{id}', [ApplicationController::class, 'show'])->name('applications.show');

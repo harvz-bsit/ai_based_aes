@@ -128,4 +128,35 @@
             <button type="submit" class="btn btn-primary btn-lg">Submit Application</button>
         </form>
     </div>
+    @if ($noRelatedJobs)
+        <div class="modal fade show" style="display:block; background:rgba(0,0,0,.6)">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content text-center p-4">
+
+                    <i class="bi bi-robot text-primary display-4"></i>
+                    <h5 class="mt-3">AI Advisory</h5>
+
+                    <p class="text-muted">
+                        No jobs matched your selected criteria.
+                        Do you want to continue anyway?
+                    </p>
+
+                    <div class="mt-3">
+                        <a href="{{ route('apply') }}" class="btn btn-primary">
+                            Yes, Continue
+                        </a>
+                        <a href="{{ route('dashboard') }}" class="btn btn-outline-danger ms-2">
+                            No, Back to Dashboard
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    @endif
 @endsection
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        window.history.replaceState({}, document.title, '/apply');
+    });
+</script>

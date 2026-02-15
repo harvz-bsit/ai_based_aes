@@ -13,7 +13,7 @@
                     <img src="{{ asset('images/ispsc_logo.png') }}" alt="" class="mb-2 img-fluid" style="width:120px;">
                 </div>
                 <h1 class="fw-bold display-5">
-                    AI-Based Applicant <br> Evaluation System
+                    SMARTHIRE
                 </h1>
                 <p class="text-muted mt-3">
                     A smart recruitment platform that leverages Artificial Intelligence
@@ -67,19 +67,19 @@
                 <!-- FILTER BUTTONS -->
                 <div class="mb-4 text-center">
                     <button class="btn btn-outline-primary btn-sm filter-btn active" data-filter="all">
-                        All Courses
+                        All Campuses
                     </button>
-                    @foreach ($jobs->pluck('course')->unique() as $course)
+                    @foreach ($jobs->pluck('campus')->unique() as $campus)
                         <button class="btn btn-outline-primary btn-sm filter-btn"
-                            data-filter="{{ strtolower(str_replace(' ', '-', $course)) }}">
-                            {{ $course }}
+                            data-filter="{{ strtolower(str_replace(' ', '-', $campus)) }}">
+                            {{ $campus }}
                         </button>
                     @endforeach
                 </div>
 
                 <div class="row g-4" id="jobsContainer">
-                    @foreach ($jobs as $job)
-                        <div class="col-md-4 job-item" data-filter="{{ strtolower(str_replace(' ', '-', $job->course)) }}">
+                    @forelse ($jobs as $job)
+                        <div class="col-md-4 job-item" data-filter="{{ strtolower(str_replace(' ', '-', $job->campus)) }}">
                             <div class="card h-100 job-card" data-bs-toggle="modal"
                                 data-bs-target="#jobModal{{ $job->id }}" style="cursor:pointer;">
                                 <div class="card-body">
@@ -118,7 +118,11 @@
                                 </div>
                             </div>
                         </div>
-                    @endforeach
+                    @empty
+                        <div class="col-12 text-center">
+                            <p class="text-muted">No vacancies available at the moment.</p>
+                        </div>
+                    @endforelse
                 </div>
             </div>
         </div>

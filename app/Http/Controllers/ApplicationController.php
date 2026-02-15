@@ -11,10 +11,50 @@ use App\Models\JobVacancy;
 
 class ApplicationController extends Controller
 {
-    public function create()
+    public function index()
     {
-        $jobs = JobVacancy::all();
-        return view('applicant/apply', compact('jobs')); // Blade form
+        $campuses = JobVacancy::pluck('campus')->unique();
+        $departments = JobVacancy::pluck('department')->unique();
+
+        return view('applicant/apply-filter', compact('campuses', 'departments'));
+    }
+
+    public function create(Request $request)
+    {
+        $request->validate([
+            'job_type' => 'nullable|string',
+            'employment_status' => 'nullable|string',
+            'campus' => 'nullable|string',
+            'department' => 'nullable|string',
+        ]);
+
+
+        $jobType = $request->input('job_type');
+        $employmentStatus = $request->input('employment_status');
+        $campus = $request->input('campus');
+        $department = $request->input('department');
+
+        $query = JobVacancy::query();
+
+        if ($jobType) {
+            $query->where('job_type', $jobType);
+        }
+        if ($employmentStatus) {
+            $query->where('employment_status', $employmentStatus);
+        }
+        if ($campus) {
+            $query->where('campus', $campus);
+        }
+        if ($department) {
+            $query->where('department', $department);
+        }
+
+        $query->where('is_open', 1);
+
+        $jobs = $query->get();
+        $noRelatedJobs = $jobs->isEmpty();
+
+        return view('applicant/apply', compact('jobs', 'noRelatedJobs'));
     }
 
     public function store(Request $request)
@@ -89,5 +129,15 @@ class ApplicationController extends Controller
 
         // Example: download resume
         return Storage::download($application->resume);
+    }
+
+    public function getDepartmentsByCampus($campus)
+    {
+        $departments = JobVacancy::where('campus', $campus)
+            ->pluck('department')
+            ->unique()
+            ->values();
+
+        return response()->json($departments);
     }
 }

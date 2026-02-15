@@ -20,16 +20,27 @@
 
             <hr>
 
-            <!-- JOB INFORMATION -->
-            <h5 class="fw-semibold mb-3">Job Information</h5>
-            <div class="row mb-3">
-                <div class="col-md-6"><strong>Job Applying:</strong> {{ $application->job->title }}</div>
-                <div class="col-md-6"><strong>Qualifications:</strong> {{ $application->job->qualifications }}</div>
-            </div>
+            <h5 class="fw-semibold mb-3">Educational Information</h5>
             <div class="row mb-3">
                 <div class="col-md-6"><strong>Higher Education:</strong> {{ $application->higher_education }}</div>
                 <div class="col-md-6"><strong>Major:</strong> {{ $application->major }}</div>
             </div>
+
+            <hr>
+
+            <!-- JOB INFORMATION -->
+            <h5 class="fw-semibold mb-3">Job Applying</h5>
+            <div class="row mb-3">
+                <div class="col-md-6 mb-2"><strong>Title:</strong> {{ $application->job->title }}</div>
+                <div class="col-md-6 mb-2"><strong>Description:</strong> {{ $application->job->description }}</div>
+                <div class="col-md-6 mb-2"><strong>Type:</strong> {{ ucfirst($application->job->job_type) }}</div>
+                <div class="col-md-6 mb-2"><strong>Employment Status:</strong>
+                    {{ ucfirst($application->job->employment_status) }}</div>
+                <div class="col-md-6 mb-2"><strong>Campus:</strong> {{ $application->job->campus }}</div>
+                <div class="col-md-6 mb-2"><strong>Department:</strong> {{ $application->job->department }}</div>
+                <div class="col-md-12"><strong>Qualifications:</strong> {{ $application->job->qualifications }}</div>
+            </div>
+
 
             <hr>
 

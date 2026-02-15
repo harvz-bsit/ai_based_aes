@@ -45,7 +45,7 @@
     <!-- FOOTER -->
     <footer class="py-4 mt-5">
         <div class="container text-center">
-            <p class="mb-1">© {{ date('Y') }} AI-Based Applicant Evaluation System</p>
+            <p class="mb-1">© {{ date('Y') }} SMARTHIRE</p>
             <small>Smart recruitment powered by Artificial Intelligence</small>
         </div>
     </footer>

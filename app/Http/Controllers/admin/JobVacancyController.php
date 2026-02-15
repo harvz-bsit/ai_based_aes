@@ -26,9 +26,13 @@ class JobVacancyController extends Controller
             'description' => 'nullable|string',
             'qualifications' => 'nullable|string',
             'course' => 'required|string',
+            'job_type' => 'required|string',
+            'employment_status' => 'required|string',
+            'campus' => 'required|string',
+            'department' => 'required|string',
         ]);
 
-        JobVacancy::create($request->only('title', 'description', 'qualifications', 'course'));
+        JobVacancy::create($request->only('title', 'description', 'qualifications', 'course', 'job_type', 'employment_status', 'campus', 'department'));
 
         return redirect()->route('admin.job_vacancies.index')->with('success', 'Job vacancy created successfully!');
     }
@@ -44,9 +48,14 @@ class JobVacancyController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'qualifications' => 'nullable|string',
+            'course' => 'required|string',
+            'job_type' => 'required|string',
+            'employment_status' => 'required|string',
+            'campus' => 'required|string',
+            'department' => 'required|string',
         ]);
 
-        $jobVacancy->update($request->only('title', 'description', 'qualifications'));
+        $jobVacancy->update($request->only('title', 'description', 'qualifications', 'course', 'job_type', 'employment_status', 'campus', 'department'));
 
         return redirect()->route('admin.job_vacancies.index')->with('success', 'Job vacancy updated successfully!');
     }

@@ -110,7 +110,7 @@
         <div class="container-fluid">
 
             <a class="navbar-brand fw-bold" href="#">
-                AES - Applicant Evaluation System
+                SMARTHIRE
             </a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNavbar"
@@ -156,7 +156,7 @@
             <ul class="nav flex-column">
 
                 <li class="nav-item mb-2">
-                    <a href="{{ route('apply') }}" class="nav-link">Apply for Job</a>
+                    <a href="{{ route('apply.filter') }}" class="nav-link">Apply for Job</a>
                 </li>
 
                 <li class="nav-item mb-2">
@@ -175,7 +175,7 @@
 
     <!-- FOOTER -->
     <footer class="text-center py-3 mt-auto small bg-dark text-white border-top">
-        © {{ date('Y') }} AES · ISPSC
+        © {{ date('Y') }} SMARTHIRE · ISPSC
     </footer>
 
     <!-- Bootstrap JS -->
