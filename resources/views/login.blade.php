@@ -35,7 +35,7 @@
                         <div class="text-center mb-3">
                             <img src="{{ asset('images/ispsc_logo.png') }}" alt="ISPSC Logo" class="img-fluid"
                                 style="max-width: 20%">
-                            <h4 class="mt-2">AI-Based AES Login</h3>
+                            <h4 class="mt-2">SMARTHIRE Login</h3>
                         </div>
                         <hr>
                         <!-- Show Sign Up Success -->
@@ -86,7 +86,7 @@
     </main>
 
     <footer class="text-center py-3 small" style="background-color: rgb(223, 223, 32)">
-        © {{ date('Y') }} AI-Based AES · ISPSC
+        © {{ date('Y') }} SMARTHIRE · ISPSC
     </footer>
 </body>
 

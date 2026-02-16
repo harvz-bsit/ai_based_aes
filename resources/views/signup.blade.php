@@ -35,7 +35,7 @@
                         <div class="text-center mb-3">
                             <img src="{{ asset('images/ispsc_logo.png') }}" alt="ISPSC Logo" class="img-fluid"
                                 style="max-width: 20%">
-                            <h4 class="mt-2">AI-Based AES Sign Up</h3>
+                            <h4 class="mt-2">SMARTHIRE Sign Up</h3>
                         </div>
                         <hr>
                         <form method="POST" action="{{ route('register') }}">
@@ -93,7 +93,7 @@
     </main>
 
     <footer class="text-center py-3 small" style="background-color: rgb(223, 223, 32)">
-        © {{ date('Y') }} AI-Based AES · ISPSC
+        © {{ date('Y') }} SMARTHIRE · ISPSC
     </footer>
 </body>
 
