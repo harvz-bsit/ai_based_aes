@@ -9,9 +9,10 @@
         <table class="table table-bordered table-hover table-fixed">
             <thead>
                 <tr class="text-center">
-                    <th>#</th>
                     <th>Applicant Name</th>
                     <th>Job Applied</th>
+                    <th>Campus</th>
+                    <th>Department</th>
                     <th>Recommendation</th>
                     <th>Status</th>
                     <th>Actions</th>
@@ -20,9 +21,10 @@
             <tbody>
                 @foreach ($applications as $index => $app)
                     <tr>
-                        <td>{{ $index + 1 }}</td>
                         <td>{{ $app->full_name }}</td>
                         <td>{{ $app->job->title }}</td>
+                        <td>{{ $app->job->campus }}</td>
+                        <td>{{ $app->job->department }}</td>
                         <td>{{ $app->ai_recommendation ?? 'N/A' }}</td>
                         <td>
                             @php

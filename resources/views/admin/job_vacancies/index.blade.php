@@ -15,6 +15,8 @@
                 <tr class="text-center">
                     <th>Title</th>
                     <th>Qualifications</th>
+                    <th>Campus</th>
+                    <th>Department / College</th>
                     <th>Created At</th>
                     <th>Status</th>
                     <th>Actions</th>
@@ -25,6 +27,8 @@
                     <tr class="text-center">
                         <td>{{ $vacancy->title }}</td>
                         <td>{{ $vacancy->qualifications }}</td>
+                        <td>{{ $vacancy->campus }}</td>
+                        <td>{{ $vacancy->department }}</td>
                         <td>{{ $vacancy->created_at->format('Y-m-d') }}</td>
 
                         <!-- STATUS -->

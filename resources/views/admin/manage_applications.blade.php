@@ -12,6 +12,8 @@
                         <th>Full Name</th>
                         <th>Email</th>
                         <th>Job Applied</th>
+                        <th>Campus</th>
+                        <th>Department</th>
                         <th>Status</th>
                         <th>Actions</th>
                     </tr>
@@ -23,6 +25,8 @@
                             <td>{{ $app->full_name }}</td>
                             <td>{{ $app->email }}</td>
                             <td>{{ $app->job->title }}</td>
+                            <td>{{ $app->job->campus }}</td>
+                            <td>{{ $app->job->department }}</td>
                             <td>
                                 @php
                                     $badgeClass = match ($app->status) {
