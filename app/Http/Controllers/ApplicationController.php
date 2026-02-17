@@ -63,21 +63,6 @@ class ApplicationController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'full_name' => 'required|string|max:255',
-            'contact_number' => 'required|string|max:50',
-            'address' => 'required|string',
-            'job_id' => 'required|exists:job_vacancies,id',
-            'higher_education' => 'required|string',
-            'major' => 'required|string',
-            'application_letter' => 'required|file|mimes:pdf,doc,docx',
-            'resume' => 'required|file|mimes:pdf,doc,docx',
-            'pds' => 'required|file|mimes:pdf',
-            'otr' => 'required|file|mimes:pdf',
-            'certificates.*' => 'nullable|file|mimes:pdf,doc,docx',
-            'ratings' => 'nullable|string|max:50',
-        ]);
-
         // Store uploaded files in the public disk
         $applicationLetter = $request->file('application_letter')->store('applications', 'public');
         $resume = $request->file('resume')->store('applications', 'public');

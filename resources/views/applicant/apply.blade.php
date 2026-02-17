@@ -6,9 +6,8 @@
     <div class="container py-5">
         <h2 class="fw-bold mb-4">Job Application Form</h2>
 
-        <form method="POST" action="" enctype="multipart/form-data">
+        <form method="POST" action="{{ route('applications.store') }}" enctype="multipart/form-data">
             @csrf
-
             <!-- PERSONAL INFORMATION -->
             <div class="card shadow-sm mb-4">
                 <div class="card-body">
@@ -157,6 +156,6 @@
 @endsection
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        window.history.replaceState({}, document.title, '/apply');
+        window.history.replaceState({}, document.title, '/apply/form');
     });
 </script>
