@@ -131,14 +131,6 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('admin.dashboard') }}">Dashboard</a>
                     </li>
-                    {{-- 
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('about') }}">About Us</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('contact') }}">Contact Us</a>
-                    </li> --}}
 
                     <li class="nav-item ms-lg-1">
                         <form method="POST" action="{{ route('logout') }}">
@@ -167,7 +159,7 @@
                 </li>
 
                 <li class="nav-item mb-2">
-                    <a href="{{ route('admin.ai-evaluations') }}" class="nav-link">AI Evaluation Results</a>
+                    <a href="{{ route('admin.ai-evaluations') }}" class="nav-link">Initial Evaluation</a>
                 </li>
 
                 <li class="nav-item mb-2">
@@ -175,7 +167,7 @@
                 </li>
 
                 <li class="nav-item mb-2">
-                    <a href="{{ route('admin.kmeans.index') }}" class="nav-link">K-Means Clusters</a>
+                    <a href="{{ route('admin.kmeans.index') }}" class="nav-link">Ranks</a>
                 </li>
             </ul>
         </aside>

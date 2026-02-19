@@ -86,8 +86,15 @@
                                             {{ $position->department ?? 'N/A' }} ||
                                             {{ $position->campus ?? 'N/A' }}
                                         </p>
+                                        @php
+                                            $qualifications = is_array($position->qualifications)
+                                                ? $position->qualifications
+                                                : json_decode($position->qualifications, true);
+                                        @endphp
+
                                         <p class="card-text text-muted small mb-2">
-                                            {{ Str::limit($position->qualifications, 60) }}</p>
+                                            {{ Str::limit($qualifications['education'] ?? 'N/A', 60) }}
+                                        </p>
                                         <span class="badge {{ $position->is_open ? 'bg-success' : 'bg-secondary' }}">
                                             {{ $position->is_open ? 'Open' : 'Closed' }}
                                         </span>
@@ -105,13 +112,22 @@
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                     aria-label="Close"></button>
                                             </div>
-                                            <div class="modal-body">`
+                                            <div class="modal-body">
                                                 <p><strong>Department:</strong>
-                                                    {{ $position->department ?? 'N/A' }}</p>`
+                                                    {{ $position->department ?? 'N/A' }}</p>
                                                 <p><strong>Campus:</strong>
-                                                    {{ $position->campus ?? 'N/A' }}</p>`
+                                                    {{ $position->campus ?? 'N/A' }}</p>
                                                 <p><strong>Qualifications:</strong></p>
-                                                <p>{{ $position->qualifications }}</p>
+                                                <ul>
+                                                    <li><strong>Education:</strong>
+                                                        {{ $qualifications['education'] ?? 'N/A' }}</li>
+                                                    <li><strong>Experience:</strong>
+                                                        {{ $qualifications['experience'] ?? 'N/A' }}</li>
+                                                    <li><strong>Training:</strong>
+                                                        {{ $qualifications['training'] ?? 'N/A' }}</li>
+                                                    <li><strong>Eligibility:</strong>
+                                                        {{ $qualifications['eligibility'] ?? 'N/A' }}</li>
+                                                </ul>
 
                                                 @if (!empty($position->description))
                                                     <p><strong>Description:</strong></p>

@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="container py-5">
-        <h2 class="fw-bold mb-4">K-Means Cluster</h2>
+        <h2 class="fw-bold mb-4">Rankings</h2>
 
         <div class="card mb-4">
             <div class="card-body">

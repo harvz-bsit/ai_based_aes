@@ -9,10 +9,19 @@ class JobVacancy extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'description', 'qualifications', 'course', 'is_open', 'job_type', 'employment_status', 'campus', 'department'];
+    protected $fillable = ['title', 'description', 'qualifications', 'course', 'is_open', 'job_type', 'employment_status', 'campus', 'department', 'available_positions'];
+
+    protected $casts = [
+        'qualifications' => 'array',
+    ];
 
     public function applications()
     {
         return $this->hasMany(Application::class, 'job_id');
+    }
+
+    public function alliedCourse()
+    {
+        return $this->belongsTo(AlliedCourse::class, 'course', 'course');
     }
 }

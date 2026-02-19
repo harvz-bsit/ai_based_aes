@@ -28,6 +28,8 @@ class ApplicationController extends Controller
             'department' => 'nullable|string',
         ]);
 
+
+
         if (!$request->hasAny(['job_type', 'employment_status', 'campus', 'department'])) {
             return redirect()->route('apply.filter')->with('error', 'Please select at least one filter option.');
         }
@@ -58,21 +60,36 @@ class ApplicationController extends Controller
         $jobs = $query->get();
         $noRelatedJobs = $jobs->isEmpty();
 
-        return view('applicant/apply', compact('jobs', 'noRelatedJobs'));
+        return view('applicant.apply', compact('jobs', 'noRelatedJobs'));
     }
+
+    public function showForm(Request $request)
+    {
+        $jobs = collect();
+        $noRelatedJobs = false;
+
+        // if (!$request->hasAny(['job_type', 'employment_status', 'campus', 'department'])) {
+        //     return redirect()->route('apply.filter')->with('error', 'Please select at least one filter option.');
+        // }
+
+        return view('applicant.apply', compact('jobs', 'noRelatedJobs'));
+    }
+
 
     public function store(Request $request)
     {
-        // Store uploaded files in the public disk
+        // Store uploaded files
         $applicationLetter = $request->file('application_letter')->store('applications', 'public');
-        $resume = $request->file('resume')->store('applications', 'public');
         $pds = $request->file('pds')->store('applications', 'public');
-        $otr = $request->file('otr')->store('applications', 'public');
+        $otrDiploma = $request->file('otr_diploma')->store('applications', 'public');
+        $certificateEligibility = $request->hasFile('certificate_eligibility')
+            ? $request->file('certificate_eligibility')->store('applications', 'public')
+            : null;
 
-        $certificates = [];
-        if ($request->hasFile('certificates')) {
-            foreach ($request->file('certificates') as $cert) {
-                $certificates[] = $cert->store('applications/certificates', 'public');
+        $certificatesTraining = [];
+        if ($request->hasFile('certificates_training')) {
+            foreach ($request->file('certificates_training') as $cert) {
+                $certificatesTraining[] = $cert->store('applications/certificates_training', 'public');
             }
         }
 
@@ -84,16 +101,18 @@ class ApplicationController extends Controller
             'contact_number' => $request->contact_number,
             'address' => $request->address,
             'job_id' => $request->job_id,
-            'higher_education' => $request->higher_education,
-            'major' => $request->major,
+            'education' => $request->education,
+            'training' => $request->training,
+            'eligibility' => $request->eligibility,
+            'work_experience' => $request->work_experience,
             'application_letter' => $applicationLetter,
-            'resume' => $resume,
             'pds' => $pds,
-            'otr' => $otr,
-            'certificates' => $certificates, // store as JSON
-            'ratings' => $request->ratings,
+            'otr_diploma' => $otrDiploma,
+            'certificate_eligibility' => $certificateEligibility,
+            'certificates_training' => $certificatesTraining, // store as JSON
         ]);
 
+        // Dispatch AI evaluation job
         EvaluateApplicationAI::dispatch($application);
 
         return redirect()->route('dashboard')->with('success', 'Application submitted successfully!');

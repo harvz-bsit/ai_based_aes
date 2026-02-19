@@ -4,7 +4,11 @@
     <div class="container py-5">
         <h2 class="mb-4">Manage Job Vacancies</h2>
 
-        <a href="{{ route('admin.job_vacancies.create') }}" class="btn btn-primary mb-3">+ Add Job Vacancy</a>
+        <div class="d-flex justify-content-between">
+            <a href="{{ route('admin.job_vacancies.create') }}" class="btn btn-primary mb-3">+ Add Job Vacancy</a>
+            <a href="{{ route('admin.courses') }}" class="btn btn-success mb-3"><i class="bi bi-list-task"></i>
+                Courses</a>
+        </div>
 
         @if (session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>
@@ -76,6 +80,7 @@
                     <th>Title</th>
                     <th>Campus</th>
                     <th>Department / College</th>
+                    <th>Course</th>
                     <th>Created At</th>
                     <th>Status</th>
                     <th>Actions</th>
@@ -87,6 +92,7 @@
                         <td>{{ $vacancy->title }}</td>
                         <td>{{ $vacancy->campus }}</td>
                         <td>{{ $vacancy->department }}</td>
+                        <td>{{ $vacancy->course }}</td>
                         <td>{{ $vacancy->created_at->format('Y-m-d') }}</td>
 
                         <!-- STATUS -->

@@ -17,7 +17,7 @@
                             <select name="job_type" class="form-select" required>
                                 <option value="">Select</option>
                                 <option value="Teaching">Teaching</option>
-                                <option value="Non-Teaching">Non-Teaching</option>
+                                <option value="Non_Teaching">Non-Teaching</option>
                             </select>
                         </div>
 

@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="container py-5">
-        <h2 class="fw-bold mb-4">AI Evaluation Results</h2>
+        <h2 class="fw-bold mb-4">Initial Evaluation Results</h2>
 
         <table class="table table-bordered table-hover table-fixed">
             <thead>

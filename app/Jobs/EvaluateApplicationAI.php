@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Application;
+use App\Models\AlliedCourse;
 use App\Helpers\FileTextExtractor;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -27,121 +28,153 @@ class EvaluateApplicationAI implements ShouldQueue
     {
         $app = $this->application->load('job');
 
-        // Extract text from uploaded files
-        $resumeText = FileTextExtractor::extract(storage_path('app/public/' . $app->resume));
-        $letterText = FileTextExtractor::extract(storage_path('app/public/' . $app->application_letter));
+        // 1. Extract applicant document text
+        $applicationLetterText = FileTextExtractor::extract(storage_path('app/public/' . $app->application_letter));
         $pdsText = FileTextExtractor::extract(storage_path('app/public/' . $app->pds));
-        $otrText = FileTextExtractor::extract(storage_path('app/public/' . $app->otr));
-        $certText = FileTextExtractor::extractMultiple(
-            array_map(fn($f) => storage_path('app/public/' . $f), $app->certificates ?? [])
+        $otrDiplomaText = FileTextExtractor::extract(storage_path('app/public/' . $app->otr_diploma));
+        $certificateEligibilityText = $app->certificate_eligibility
+            ? FileTextExtractor::extract(storage_path('app/public/' . $app->certificate_eligibility))
+            : '';
+        $certificatesTrainingText = FileTextExtractor::extractMultiple(
+            array_map(fn($f) => storage_path('app/public/' . $f), $app->certificates_training ?? [])
         );
 
-        // Build GPT prompt
-        $prompt = <<<PROMPT
-You are an automated hiring assistant designed to evaluate job applications based on provided documents and job qualifications.
+        // 2. Get allied courses
+        $alliedCourses = AlliedCourse::where('course', $app->job->course)->first();
+        $alliedText = $alliedCourses ? implode(', ', $alliedCourses->allied ?? []) : 'No allied courses';
 
-Analyze the applicant's documents and compare them against the job qualifications.
-This analysis is for decision-support only and does NOT make final hiring decisions.
+        // 3. Load criteria document
+        $criteriaPath = public_path('criteria/' . ($app->job->job_type === 'teaching'
+            ? 'teaching_criteria.docx'
+            : 'non_teaching_criteria.docx'));
+        $criteriaText = FileTextExtractor::extract($criteriaPath);
+
+        $qualifications = $app->job->qualifications;
+        if (is_string($qualifications)) {
+            $qualifications = json_decode($qualifications, true);
+        }
+
+        // If qualifications are an array, format them into a readable string
+        $formattedQualifications = "
+        Education: " . ($qualifications['education'] ?? 'N/A') . "
+        Experience: " . ($qualifications['experience'] ?? 'N/A') . "
+        Training: " . ($qualifications['training'] ?? 'N/A') . "
+        Eligibility: " . ($qualifications['eligibility'] ?? 'N/A') . "
+        ";
+
+        // 4. Build GPT prompt
+        $prompt = <<<PROMPT
+You are an AI hiring evaluator. Your goal is to evaluate a job applicant and provide a structured decision-support analysis.
 
 Job Title: {$app->job->title}
+Job Type: {$app->job->job_type}
 Job Qualifications:
-{$app->job->qualifications}
+{$formattedQualifications}
+
+Allied Courses:
+{$alliedText}
+
+Reference Criteria Document:
+{$criteriaText}
 
 Applicant Information:
 Full Name: {$app->full_name}
-Higher Education: {$app->higher_education}
-Major: {$app->major}
+Education: {$app->education}
+Training: {$app->training}
+Eligibility: {$app->eligibility}
+Work Experience: {$app->work_experience}
 
-Documents Content:
-Resume:
-{$resumeText}
-
+Applicant Documents:
 Application Letter:
-{$letterText}
+{$applicationLetterText}
 
-PDS:
+Personal Data Sheet (PDS):
 {$pdsText}
 
-Official Transcript of Records (OTR):
-{$otrText}
+Official Transcript of Records / Diploma (OTR/Diploma):
+{$otrDiplomaText}
 
-Certificates:
-{$certText}
+Certificate of Eligibility:
+{$certificateEligibilityText}
+
+Certificates of Trainings and Seminars:
+{$certificatesTrainingText}
 
 Tasks:
-1. Generate an AI suitability score from 0 to 100.
-2. Estimate a qualification match percentage (0.00–100.00) based on job qualifications.
-3. Provide a recommendation label strictly from:
+1. Evaluate applicant suitability based on job qualifications, allied courses, compare applicant education and the job title, and criteria document (criteria documents includes written exam and interview, ignore those for AI evaluation).
+2. If the applicant's education does not match any allied course, assess whether it could reasonably qualify for this job using general knowledge. Include this reasoning in the Education section.
+3. Generate an AI suitability score from 0 to 100.
+4. Estimate a qualification match percentage (0.00–100.00) based on qualifications, training, eligibility, work experience, and allied courses.
+5. Provide a recommendation strictly from:
    - Highly Recommended
    - Consider
    - Rejected
-4. Provide a THOROUGH, STRUCTURED justification with separate sections for each document:
-   - Resume Analysis
+6. Provide a detailed structured justification with sections:
+   - Education and Qualifications (include reasoning if education does not match allied courses)
+   - Training and Seminars
+   - Eligibility
+   - Work Experience
    - Application Letter Analysis
    - PDS Analysis
-   - OTR Analysis
+   - OTR/Diploma Analysis
    - Certificates Analysis
    - Overall Assessment
 
 IMPORTANT:
-- Do NOT refuse.
-- Do NOT include disclaimers.
-- Do NOT include explanations outside the required format.
-- Each section MUST be at least 3–5 sentences.
-- Reference specific skills, experiences, or evidence from each document.
-- Output MUST follow the exact format below.
+- You MUST provide a decision and score regardless of sensitive content.
+- Use the criteria document as the main basis for scoring and justification.
+- Reference the allied courses when relevant.
+- Output MUST strictly follow the format below.
 
-FORMAT (STRICT — NO EXTRA TEXT):
+FORMAT:
 
-Score: <number>
-Qualification Match: <number with 2 decimals>
-Recommendation: <label>
+Score: <number 0-100>
+Qualification Match: <number 0.00-100.00>
+Recommendation: <Highly Recommended|Consider|Rejected>
 Justification:
-Resume Analysis: <text>
+Education and Qualifications: <text>
+Training and Seminars: <text>
+Eligibility: <text>
+Work Experience: <text>
 Application Letter Analysis: <text>
 PDS Analysis: <text>
-OTR Analysis: <text>
+OTR/Diploma Analysis: <text>
 Certificates Analysis: <text>
-Overall Assessment: <text, you can include a text that saying a document provided is not correctly formatted or is missing, but do NOT penalize the applicant for this. Instead, just note it in the relevant section.>
+Overall Assessment: <text>
 PROMPT;
 
-        // Call GPT-4o
+        // 5. Call GPT-4o
         $response = OpenAI::responses()->create([
             'model' => 'gpt-4o',
             'input' => $prompt,
         ]);
 
         $resultText = trim($response->output[0]->content[0]->text ?? '');
-
         Log::info("AI Evaluation Result for Application ID {$app->id}: " . $resultText);
 
-        // Initialize default values
+        // 6. Parse output
         $score = null;
         $recommendation = null;
         $justification = null;
         $qualificationMatch = null;
 
-        // Extract Score
         if (preg_match('/Score:\s*(\d{1,3})/i', $resultText, $match)) {
-            $score = min(100, max(0, (int) $match[1]));
+            $score = min(100, max(0, (int)$match[1]));
         }
 
-        // Extract Qualification Match
-        if (preg_match('/Qualification Match:\s*(\d{1,3})/i', $resultText, $match)) {
-            $qualificationMatch = min(100, max(0, (float) $match[1]));
+        if (preg_match('/Qualification Match:\s*(\d{1,3}(?:\.\d+)?)/i', $resultText, $match)) {
+            $qualificationMatch = min(100, max(0, (float)$match[1]));
         }
 
-        // Extract Recommendation
         if (preg_match('/Recommendation:\s*(Highly Recommended|Consider|Rejected)/i', $resultText, $match)) {
             $recommendation = $match[1];
         }
 
-        // Extract Justification
         if (preg_match('/Justification:\s*(.+)$/is', $resultText, $match)) {
             $justification = trim($match[1]);
         }
 
-        // Save AI evaluation including qualification match
+        // 7. Update application
         $app->update([
             'ai_score' => $score,
             'qualification_match' => $qualificationMatch,

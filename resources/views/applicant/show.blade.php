@@ -20,10 +20,12 @@
 
             <hr>
 
-            <h5 class="fw-semibold mb-3">Educational Information</h5>
+            <h5 class="fw-semibold mb-3">Education & Experience</h5>
             <div class="row mb-3">
-                <div class="col-md-6"><strong>Higher Education:</strong> {{ $application->higher_education }}</div>
-                <div class="col-md-6"><strong>Major:</strong> {{ $application->major }}</div>
+                <div class="col-md-6"><strong>Education:</strong> {{ $application->education }}</div>
+                <div class="col-md-6"><strong>Experience:</strong> {{ $application->work_experience }}</div>
+                <div class="col-md-6"><strong>Training:</strong> {{ $application->training }}</div>
+                <div class="col-md-6"><strong>Eligibility:</strong> {{ $application->eligibility }}</div>
             </div>
 
             <hr>
@@ -38,9 +40,23 @@
                     {{ ucfirst($application->job->employment_status) }}</div>
                 <div class="col-md-6 mb-2"><strong>Campus:</strong> {{ $application->job->campus }}</div>
                 <div class="col-md-6 mb-2"><strong>Department:</strong> {{ $application->job->department }}</div>
-                <div class="col-md-12"><strong>Qualifications:</strong> {{ $application->job->qualifications }}</div>
+                <div class="col-md-12 mt-2">
+                    <div class="card bg-light">
+                        <div class="card-body">
+                            <strong>Qualifications:</strong>
+                            <ul>
+                                @php
+                                    $qualifications = $application->job->qualifications;
+                                @endphp
+                                <li><strong>Education:</strong> {{ $qualifications['education'] }}</li>
+                                <li><strong>Experience:</strong> {{ $qualifications['experience'] }}</li>
+                                <li><strong>Training:</strong> {{ $qualifications['training'] }}</li>
+                                <li><strong>Eligibility:</strong> {{ $qualifications['eligibility'] }}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
-
 
             <hr>
 
@@ -50,10 +66,10 @@
                 @php
                     $files = [
                         'Application Letter' => $application->application_letter,
-                        'Resume' => $application->resume,
                         'PDS' => $application->pds,
-                        'OTR (Transcript)' => $application->otr,
-                        'Certificates' => $application->certificates,
+                        'OTR (Transcript) / Diploma' => $application->otr_diploma,
+                        'Certificate Eligibility' => $application->certificate_eligibility,
+                        'Certificate Training' => $application->certificates_training,
                     ];
                 @endphp
 
@@ -77,7 +93,7 @@
             </ul>
 
             <hr>
-
+            {{-- 
             <!-- EVALUATION -->
             <h5 class="fw-semibold mb-3">Evaluation</h5>
             <div class="row">
@@ -98,7 +114,7 @@
                     @endphp
                     <span class="badge {{ $badgeClass }}">{{ $status }}</span>
                 </div>
-            </div>
+            </div> --}}
 
             <hr>
 
@@ -140,7 +156,7 @@
                     <div class="alert alert-light border">
                         <strong>AI Summary:</strong>
                         <p class="mb-0 mt-2 text-muted">
-                            {{ $application->ai_summary }}
+                            {!! nl2br(e($application->ai_summary)) !!}
                         </p>
                     </div>
                 @endif

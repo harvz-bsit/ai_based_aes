@@ -6,6 +6,8 @@ use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KMeansController;
 use App\Http\Controllers\LandingController;
+use App\Http\Controllers\Admin\JobVacancyController;
+use App\Http\Controllers\AlliedCourseController;
 
 Route::get(
     '/api/departments/{campus}',
@@ -47,6 +49,7 @@ Route::middleware('auth')->group(function () {
     // Application Routes
 
     Route::get('/apply/filter', [ApplicationController::class, 'index'])->name('apply.filter');
+    Route::get('/apply/form', [ApplicationController::class, 'showForm'])->name('apply.form');
     Route::post('/apply/form', [ApplicationController::class, 'create'])->name('apply');
     Route::post('/apply/store', [ApplicationController::class, 'store'])->name('applications.store');
     Route::get('/applications/status', [ApplicationController::class, 'status'])->name('applications.status');
@@ -66,15 +69,19 @@ Route::middleware('auth')->group(function () {
     Route::post('/applications/{application}/status', [AdminController::class, 'updateApplicationStatus'])
         ->name('admin.update_application_status');
 
-    Route::get('/admin/job-vacancies', [App\Http\Controllers\Admin\JobVacancyController::class, 'index'])->name('admin.job_vacancies.index');
-    Route::get('/admin/job-vacancies/create', [App\Http\Controllers\Admin\JobVacancyController::class, 'create'])->name('admin.job_vacancies.create');
-    Route::post('/admin/job-vacancies', [App\Http\Controllers\Admin\JobVacancyController::class, 'store'])->name('admin.job_vacancies.store');
-    Route::get('/admin/job-vacancies/{jobVacancy}/edit', [App\Http\Controllers\Admin\JobVacancyController::class, 'edit'])->name('admin.job_vacancies.edit');
-    Route::put('/admin/job-vacancies/{jobVacancy}', [App\Http\Controllers\Admin\JobVacancyController::class, 'update'])->name('admin.job_vacancies.update');
-    Route::delete('/admin/job-vacancies/{jobVacancy}', [App\Http\Controllers\Admin\JobVacancyController::class, 'destroy'])->name('admin.job_vacancies.destroy');
-    Route::put('/admin/job_vacancies/{id}/toggle-status', [App\Http\Controllers\Admin\JobVacancyController::class, 'toggleStatus'])
+    Route::get('/admin/job-vacancies', [JobVacancyController::class, 'index'])->name('admin.job_vacancies.index');
+    Route::get('/admin/job-vacancies/create', [JobVacancyController::class, 'create'])->name('admin.job_vacancies.create');
+    Route::post('/admin/job-vacancies', [JobVacancyController::class, 'store'])->name('admin.job_vacancies.store');
+    Route::get('/admin/job-vacancies/{jobVacancy}/edit', [JobVacancyController::class, 'edit'])->name('admin.job_vacancies.edit');
+    Route::put('/admin/job-vacancies/{jobVacancy}', [JobVacancyController::class, 'update'])->name('admin.job_vacancies.update');
+    Route::delete('/admin/job-vacancies/{jobVacancy}', [JobVacancyController::class, 'destroy'])->name('admin.job_vacancies.destroy');
+    Route::put('/admin/job_vacancies/{id}/toggle-status', [JobVacancyController::class, 'toggleStatus'])
         ->name('admin.job_vacancies.toggle_status');
 
 
-    Route::get('/admin/k-means', [KMeansController::class, 'index'])->name('admin.kmeans.index');
+    Route::get('/admin/job_vacancies/courses', [AlliedCourseController::class, 'index'])->name('admin.courses');
+    Route::get('/admin/job_vacancies/courses/create', [AlliedCourseController::class, 'create'])->name('admin.courses.create');
+    Route::post('/admin/job_vacancies/courses', [AlliedCourseController::class, 'store'])->name('admin.courses.store');
+
+    Route::get('/admin/rankings', [KMeansController::class, 'index'])->name('admin.kmeans.index');
 });

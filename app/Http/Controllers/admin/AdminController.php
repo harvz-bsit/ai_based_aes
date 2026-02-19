@@ -18,13 +18,14 @@ class AdminController extends Controller
         $pending     = Application::where('status', 'Pending')->count();
         $totalApplicants = Application::count();
 
-        // Applicants per job vacancy
-        $jobs = Application::select('job_id')
+        // Applicants per job vacancy with job titles
+        $jobs = Application::select('job_vacancies.title', 'applications.job_id')
+            ->join('job_vacancies', 'job_vacancies.id', '=', 'applications.job_id')
             ->selectRaw('COUNT(*) as count')
-            ->groupBy('job_id')
+            ->groupBy('applications.job_id', 'job_vacancies.title')
             ->get();
 
-        $jobLabels = $jobs->pluck('job_id');
+        $jobLabels = $jobs->pluck('title');
         $jobCounts = $jobs->pluck('count');
 
         return view('admin.dashboard', compact(

@@ -18,14 +18,15 @@ class Application extends Model
         'contact_number',
         'address',
         'job_id',
-        'higher_education',
-        'major',
+        'education',
+        'training',
+        'eligibility',
+        'work_experience',
         'application_letter',
-        'resume',
         'pds',
-        'otr',
-        'certificates',
-        'ratings',
+        'otr_diploma',
+        'certificate_eligibility',
+        'certificates_training', // store as JSON
         'status',
         'ai_score',
         'ai_recommendation',
@@ -34,8 +35,9 @@ class Application extends Model
         'qualification_match',
     ];
 
+
     protected $casts = [
-        'certificates' => 'array', // JSON for multiple certificates
+        'certificates_training' => 'array', // JSON for multiple certificates
     ];
 
     // Optional: Helper to get full path for uploaded files

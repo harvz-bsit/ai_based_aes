@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\JobVacancy;
 use Illuminate\Http\Request;
+use App\Models\AlliedCourse;
 
 class JobVacancyController extends Controller
 {
@@ -50,7 +51,8 @@ class JobVacancyController extends Controller
 
     public function create()
     {
-        return view('admin.job_vacancies.create');
+        $courses = AlliedCourse::all()->sortBy('course');
+        return view('admin.job_vacancies.create', compact('courses'));
     }
 
     public function store(Request $request)
@@ -58,17 +60,38 @@ class JobVacancyController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'qualifications' => 'nullable|string',
             'course' => 'required|string',
             'job_type' => 'required|string',
             'employment_status' => 'required|string',
             'campus' => 'required|string',
             'department' => 'required|string',
+            'education' => 'required|string|max:255',
+            'experience' => 'required|string|max:255',
+            'training' => 'nullable|string|max:255',
+            'eligibility' => 'nullable|string|max:255',
+            'available_positions' => 'required|integer|min:1',
         ]);
 
-        JobVacancy::create($request->only('title', 'description', 'qualifications', 'course', 'job_type', 'employment_status', 'campus', 'department'));
+        JobVacancy::create([
+            'title' => $request->title,
+            'description' => $request->description,
+            'course' => $request->course,
+            'job_type' => $request->job_type,
+            'employment_status' => $request->employment_status,
+            'campus' => $request->campus,
+            'department' => $request->department,
+            'available_positions' => $request->available_positions,
+            'qualifications' => [
+                'education' => $request->education,
+                'experience' => $request->experience,
+                'training' => $request->training,
+                'eligibility' => $request->eligibility,
+            ],
+        ]);
 
-        return redirect()->route('admin.job_vacancies.index')->with('success', 'Job vacancy created successfully!');
+        return redirect()
+            ->route('admin.job_vacancies.index')
+            ->with('success', 'Job vacancy created successfully!');
     }
 
     public function edit(JobVacancy $jobVacancy)
