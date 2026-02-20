@@ -108,7 +108,11 @@
                                         <button class="btn-close" data-bs-dismiss="modal"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <h6><i class="bi bi-list-check"></i> Qualifications</h6>
+                                        <p><strong>Campus:</strong> {{ $job->campus }}</p>
+                                        <p><strong>Department:</strong> {{ $job->department }}</p>
+                                        <p><strong>Course/Program:</strong> {{ $job->course }}</p>
+
+                                        <h6><strong>Qualifications</strong></h6>
                                         <ul>
                                             <li><strong>Education:</strong> {{ $qualifications['education'] ?? 'N/A' }}
                                             </li>
